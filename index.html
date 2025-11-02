@@ -1,0 +1,55 @@
+
+ 
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="styles.css">
+  <title>منوی کتاب‌های کتابخانه</title>
+</head>
+<body>
+
+  <h1>منوی کتاب‌ها</h1>
+
+  <!-- ✅ دکمه نمایش منو در موبایل -->
+  <button id="menuToggle" class="menu-toggle">دسته‌بندی‌ها</button>
+
+  <!-- ✅ منوی دسته‌بندی -->
+  <nav class="category-menu">
+    <ul id="menuSubjects">
+        <li><a href="#" data-subject="">همه کتاب ها</a></li>
+        <li><a href="#" data-subject="زندگی نامه و سفرنامه">زندگی نامه و سفرنامه</a></li>
+        <li><a href="#" data-subject="روانشناسی">روانشناسی</a></li>
+        <li><a href="#" data-subject="داستان و رمان فارسی">داستان و رمان فارسی</a></li>
+        <li><a href="#" data-subject="داستان و رمان خارجی">داستان و رمان خارجی</a></li>
+        <li><a href="#" data-subject="علوم کامپیوتر">علوم کامپیوتر</a></li>
+        <li><a href="#" data-subject="نجوم">نجوم</a></li>
+    </ul>
+  </nav>
+
+  <!-- ✅ جستجو -->
+  <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="دوست داری چه کتابی بخوانی؟">
+  </div>
+
+  <!-- ✅ نمایش کارت کتاب‌ها -->
+  <div id="books-display-area" class="books-list">
+      <p class="loading-message">در حال بارگذاری کتاب‌ها...</p>
+  </div>
+
+  <!-- ✅ صفحه‌بندی -->
+  <div id="pagination-container"></div>
+  <!-- ✅ نمایش جزئیات کتاب -->
+<div id="book-details-container" class="book-details hidden"></div>
+
+  <script src="BooksListApp.js"></script>
+  <script>
+    // ✅ منوی موبایل
+    document.getElementById("menuToggle").addEventListener("click", () => {
+        document.querySelector(".category-menu").classList.toggle("active");
+    });
+  </script>
+
+</body>
+</html>
