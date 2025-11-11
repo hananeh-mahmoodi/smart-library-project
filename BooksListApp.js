@@ -1,5 +1,5 @@
-// ⭐⭐ تنظیمات اصلی ⭐⭐
-const API_BASE_URL = 'https://localhost:44357/api/books'; 
+//------------------------- main Setting -----------------------------------------------
+const API_BASE_URL = 'http://http://82.115.16.56:2500//api/Books'; 
 const PAGE_SIZE = 3; 
 let currentPage = 1; 
 
@@ -10,7 +10,7 @@ const paginationContainer = document.getElementById('pagination-container');
 
 
 // ----------------------------------------------------------------------------------
-// 📚 تابع نمایش لیست کتاب‌ها (نمای خلاصه)
+//----------------- List of books (summary view) ------------------------------------
 // ----------------------------------------------------------------------------------
 function renderBooksList(books) {
     booksDisplayArea.innerHTML = ''; 
@@ -20,28 +20,28 @@ function renderBooksList(books) {
         const bookItem = document.createElement('div');
         bookItem.className = 'book-item';
         
-        // لینک عنوان کتاب
+        //------------ Link to the title of the book -------------------------------
         const titleLink = document.createElement('a');
         titleLink.className = 'book-title-link';
-        titleLink.textContent = book.BookTitle;
-        titleLink.setAttribute('data-book-id', book.BookUID);
+        titleLink.textContent = book.bookTitle; // 👈 حروف کوچک
+        titleLink.setAttribute('data-book-id', book.bookUID); // 👈 حروف کوچک
         titleLink.href = "#";
         titleLink.addEventListener('click', showBookDetails);
-        //titleLink.href = `details.html?uid=${book.BookUID}`;
 
-        // اطلاعات نویسنده و دسته‌بندی
+        //---------------- Author and category information --------------------------
         const info = document.createElement('p');
-        info.textContent = `نویسنده: ${book.AuthorName} | دسته‌بندی: ${book.BooksCategory}`;
+        info.textContent = `نویسنده: ${book.authorName} | دسته‌بندی: ${book.booksCategory}`; // 👈 همه با حروف کوچک
 
-        // چیدن در DOM
+        //------------------ picking at DOM --------------------------------
         bookItem.appendChild(titleLink);
         bookItem.appendChild(info);
         booksDisplayArea.appendChild(bookItem);
     });
 }
 
+
 // ----------------------------------------------------------------------------------
-// 📄 تابع صفحه‌بندی
+//------------------------- pagination function -------------------------------------
 // ----------------------------------------------------------------------------------
 function renderPagination(totalCount) {
     const totalPages = Math.ceil(totalCount / PAGE_SIZE);
@@ -73,7 +73,7 @@ function renderPagination(totalCount) {
 }
 
 // ----------------------------------------------------------------------------------
-// 🔍 نمایش جزئیات کامل کتاب
+//---------------------------------- Show full details of the book ------------------
 // ----------------------------------------------------------------------------------
 async function showBookDetails(event) {
     event.preventDefault(); 
@@ -96,29 +96,31 @@ async function showBookDetails(event) {
         }
 
         const bookDetail = await response.json();
-        
-
-
-
         detailsContainer.innerHTML = `
             <hr>
             <h3>جزئیات کتاب</h3>
-            <p><strong></strong> ${bookDetail.BookImage}</p>
+            <p><strong></strong> ${bookDetail.bookImage}</p>
             <h2>${bookDetail.BookTitle}</h2>
-            <p><strong>نویسنده:</strong> ${bookDetail.AuthorName}</p>
-            <p><strong>مترجم:</strong> ${bookDetail.Translator}</p>
+            <p><strong>نویسنده:</strong> ${bookDetail.authorName}</p>
+            <p><strong>مترجم:</strong> ${bookDetail.translator}</p>
             <p><strong>ISBN:</strong> ${bookDetail.ISBN}</p>
-            <p><strong>دسته‌بندی:</strong> ${bookDetail.BooksCategory}</p>
+            <p><strong>دسته‌بندی:</strong> ${bookDetail.booksCategory}</p>
             <p><strong>:نام ناشر</strong> ${bookDetail.publisherName}</p>
-            <p><strong>:سال انتشار</strong> ${bookDetail.PublicationYear}</p>
-            <p><strong>:تعداد صفحات</strong> ${bookDetail.PagesNumber}</p>
-            <p><strong>وضعیت امانت:</strong> ${bookDetail.BorrowingStatus}</p>
-            <p><strong>توضیحات کامل:</strong> ${bookDetail.Description || 'توضیحاتی موجود نیست.'}</p>
+            <p><strong>:سال انتشار</strong> ${bookDetail.publicationYear}</p>
+            <p><strong>:تعداد صفحات</strong> ${bookDetail.pagesNumber}</p>
+            <p><strong>وضعیت امانت:</strong> ${bookDetail.borrowingStatus}</p>
+            <p><strong>توضیحات کامل:</strong> ${bookDetail.description || 'توضیحاتی موجود نیست.'}</p>
              
         `;
                
         const backButton = document.createElement('button');
         backButton.textContent = 'بازگشت به لیست اصلی';
+        backButton.style.backgroundColor = "#694d41";
+        backButton.style.color = "white";
+        backButton.style.borderRadius = "15px";
+        backButton.style.padding = "15px";
+        backButton.style.fontFamily = "IranNastaliq";
+        backButton.style.fontSize = "35px";
         backButton.addEventListener('click', () => {
             detailsContainer.innerHTML = ''; 
             fetchBooks(currentPage); 
@@ -134,7 +136,7 @@ async function showBookDetails(event) {
 }
 let searchTimeout;
 
-// ✅ Live Search
+//----------------------------  Live Search ---------------------------------------
 document.getElementById('searchInput').addEventListener('input', function () {
     clearTimeout(searchTimeout);
 
@@ -142,14 +144,13 @@ document.getElementById('searchInput').addEventListener('input', function () {
         const query = this.value.trim();
 
         if (!query) {
-            fetchBooks(1); // اگر کادر خالی شد → لیست کامل برگردد
+            fetchBooks(1); //If the box is empty → the full list is returned
             return;
         }
 
         doSearch(query);
-    }, 300); // ⏱ جلوگیری از ارسال زیاد درخواست (Debounce)
+    }, 300); //Preventing excessive requests (Debounce)
 });
-
 
 async function doSearch(query) {
     try {
@@ -160,15 +161,15 @@ async function doSearch(query) {
         const data = await response.json();
         console.log(response);
 
-        // ✅ نتیجه خالی = فقط پیام
-        if (!data.Books || data.Books.length === 0) {
+        // Empty result = message only
+        if (!data.books || data.books.length === 0) {
             booksDisplayArea.innerHTML = `<p class="error">کتابی با این مشخصات یافت نشد.</p>`;
             paginationContainer.innerHTML = '';
             return;
         }
 
         currentPage = data.CurrentPage;
-        renderBooksList(data.Books);
+        renderBooksList(data.books);
         renderPagination(data.TotalCount);
 
     } catch (error) {
@@ -178,25 +179,37 @@ async function doSearch(query) {
     }
 }
 
+//---------------------------- Function to get book from API based on page number --------------
+
 async function fetchBooks(page, category = '') {
-    let url = `${API_BASE_URL}?pageNumber=${page}&pageSize=${PAGE_SIZE}`;
-    
+    // let url = `${API_BASE_URL}?pageNumber=${page}&pageSize=${PAGE_SIZE}`;
+    let url = `${API_BASE_URL}/Paged?pageNumber=${page}&pageSize=${PAGE_SIZE}`;
+
     if (category) {
         url += `&subject=${encodeURIComponent(category)}`;
     }
-    console.log("Fetching URL:", url);
+
+    console.log("📡 Fetching URL:", url);
+
     try {
         const response = await fetch(url);
         if (!response.ok) throw new Error(`خطای HTTP: ${response.status}`);
 
         const data = await response.json();
-        const booksArray = data.Books;
+        console.log("📦 API Response:", data);
 
-        currentPage = data.CurrentPage;
+        // گرفتن آرایه کتاب‌ها با در نظر گرفتن هر نوع پاسخ
+        const booksArray =  data.books || data;
+
+        if (!Array.isArray(booksArray)) {
+            throw new Error("فرمت پاسخ سرور نامعتبر است — آرایه Books یافت نشد.");
+        }
+
+        currentPage = data.CurrentPage || 1;
         currentCategory = category;
 
         renderBooksList(booksArray);
-        renderPagination(data.TotalCount);
+        renderPagination(data.TotalCount || booksArray.length);
 
     } catch (error) {
         console.error('Error fetching books:', error);
@@ -204,10 +217,12 @@ async function fetchBooks(page, category = '') {
         paginationContainer.innerHTML = '';
     }
 }
+
+
 document.addEventListener('DOMContentLoaded', () => {
     const menuSubjects = document.getElementById('menuSubjects');
 
-    // نمایش اولیه کتاب‌ها
+    //Initial display of books
     fetchBooks(currentPage, "");
     menuSubjects.addEventListener('click', function(e) {
     const categoryElement = e.target.closest('[data-subject]');
@@ -220,24 +235,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-
-    // const menuSubjects = document.getElementById('menu-subjects');
-    // console.log(menuSubjects);
-    // if (menuSubjects) {
-    //     menuSubjects.addEventListener('click', function(e) {
-    //         const category = e.target.getAttribute('data-subject');
-    //         if (category) { // فقط اگر data-subject وجود داشته باشد
-    //             e.preventDefault(); // فقط لینک دسته‌بندی را جلوگیری کن
-    //             console.log("Clicked category:", category);
-    //             fetchBooks(1, category);
-    //         }
-    //     });
-    // }
 });
 
-// document.getElementById("menuToggle").addEventListener("click", () => {
-//     document.querySelector(".category-menu").classList.toggle("active");
-// });
+
 
 
 
